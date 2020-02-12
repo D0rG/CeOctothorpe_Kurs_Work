@@ -1,1 +1,1 @@
-# CeOctothorpe_Kurs_Work
+# ![alt text](https://cdn.discordapp.com/attachments/624295760128901120/677057057719058432/octothorpe.jpg)
