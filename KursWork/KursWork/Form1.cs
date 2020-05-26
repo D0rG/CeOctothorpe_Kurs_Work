@@ -19,17 +19,24 @@ namespace KursWork
         private SQLiteConnection dbConnection;
         private SQLiteCommand dbCommand;
 
-        private enum tables
+        private enum tables //Название таблиц, как в БД
         {
             DeviceInWork,
             FinishedWork
+        };
+
+        //Выводимые названия колонок (индексы в enum и тут должны совпадать)
+        string[][] columns =  
+        {
+            new string[]{"Модельный номер", "Статус", "Время начала работы"},
+            new string[]{"Модельный номер", "Время начала работы", "Время окончания работы", "Стоимость ремонта"}
         };
 
         public Form1()
         {
             InitializeComponent();
 
-            if(!File.Exists(dbFileName)) //Если с программой нет БД, то выкидываем ошибку и вырубаем приложение.
+            if(!File.Exists(dbFileName))    //Если с программой нет БД, то выкидываем ошибку и вырубаем приложение.
             {
                 MessageBox.Show("Файла базы данных не существует, приложение будет остановелно.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 Environment.Exit(0);
@@ -39,25 +46,32 @@ namespace KursWork
                 dbConnection = new SQLiteConnection("Data Source=" + dbFileName);
                 dbConnection.Open();
             }
+
             SelectDB.SelectedIndex = 0;
+            SelectDB.DropDownStyle = ComboBoxStyle.DropDownList;    //Не нашел в визуалке, сделал так. (запрет ввода в комбобокс)
         }
 
         private void Form1_Load(object sender, EventArgs e)
         {
             dbCommand = new SQLiteCommand();
-            DrawTable("DeviceInWork");
+            DrawTable(0);
         }
 
-        private void DrawTable(string tableName)
+        private void DrawTable(int tableIndex)  //Отрисовка выбранной таблицы
         {
-            dataGridView1.Columns.Clear(); //Отчистка таблицы на форме.
+            dataGridView1.Columns.Clear();  //Отчистка таблицы на форме.
             dataGridView1.Refresh();
+
+            string tableName = Enum.GetName(typeof(tables), tableIndex);
             SQLiteCommand command = new SQLiteCommand($"SELECT * FROM {tableName}", dbConnection);
             SQLiteDataReader reader = null;
             reader = command.ExecuteReader();
-            dataGridView1.Columns.Add("", "Номер модели");
-            dataGridView1.Columns.Add("", "Статус");
-            dataGridView1.Columns.Add("", "Время приёма");
+
+            for(int i = 0; i < columns[tableIndex].Length; ++i)
+            {
+                dataGridView1.Columns.Add("", columns[tableIndex][i]);
+            }
+
             while (reader.Read())
             {
                 string[] fileds = new string[reader.FieldCount];
@@ -67,6 +81,7 @@ namespace KursWork
                 }
                 dataGridView1.Rows.Add(fileds);
             }
+
             reader.Close();
         }
 
@@ -77,7 +92,7 @@ namespace KursWork
 
         private void PrintDB_Click(object sender, EventArgs e)
         {
-            DrawTable(Enum.GetName(typeof(tables), SelectDB.SelectedIndex));
+            DrawTable(SelectDB.SelectedIndex);
         }
     }
 }
