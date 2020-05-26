@@ -28,7 +28,7 @@ namespace KursWork
         //Выводимые названия колонок (индексы в enum и тут должны совпадать)
         string[][] columns =  
         {
-            new string[]{"Модельный номер", "Статус", "Время начала работы"},
+            new string[]{"Модельный номер", "Статус", "Время начала работы", "ФИО клиента", "Стоимость"},
             new string[]{"Модельный номер", "Время начала работы", "Время окончания работы", "Стоимость ремонта"}
         };
 
@@ -57,6 +57,7 @@ namespace KursWork
             DrawTable(0);
         }
 
+        #region Draw
         private void DrawTable(int tableIndex)  //Отрисовка выбранной таблицы
         {
             dataGridView1.Columns.Clear();  //Отчистка таблицы на форме.
@@ -85,6 +86,91 @@ namespace KursWork
             reader.Close();
         }
 
+        private void DrawTable(int tableIndex, string name, string model)  //Отрисовка выбранной таблицы по имени и модели
+        {
+            dataGridView1.Columns.Clear();  //Отчистка таблицы на форме.
+            dataGridView1.Refresh();
+
+            string tableName = Enum.GetName(typeof(tables), tableIndex);
+            SQLiteCommand command = new SQLiteCommand($"SELECT * FROM {tableName} WHERE FIO = \"{name}\" AND modelNum = \"{model}\"", dbConnection);
+            SQLiteDataReader reader = null;
+            reader = command.ExecuteReader();
+
+            for (int i = 0; i < columns[tableIndex].Length; ++i)
+            {
+                dataGridView1.Columns.Add("", columns[tableIndex][i]);
+            }
+
+            while (reader.Read())
+            {
+                string[] fileds = new string[reader.FieldCount];
+                for (int i = 0; i < reader.FieldCount; ++i)
+                {
+                    fileds[i] = reader[i].ToString();
+                }
+                dataGridView1.Rows.Add(fileds);
+            }
+
+            reader.Close();
+        }
+
+        private void DrawTable(int tableIndex, string name)  //Отрисовка выбранной таблицы
+        {
+            dataGridView1.Columns.Clear();  //Отчистка таблицы на форме.
+            dataGridView1.Refresh();
+
+            string tableName = Enum.GetName(typeof(tables), tableIndex);
+            SQLiteCommand command = new SQLiteCommand($"SELECT * FROM {tableName} WHERE FIO = \"{name}\"", dbConnection);
+            SQLiteDataReader reader = null;
+            reader = command.ExecuteReader();
+
+            for (int i = 0; i < columns[tableIndex].Length; ++i)
+            {
+                dataGridView1.Columns.Add("", columns[tableIndex][i]);
+            }
+
+            while (reader.Read())
+            {
+                string[] fileds = new string[reader.FieldCount];
+                for (int i = 0; i < reader.FieldCount; ++i)
+                {
+                    fileds[i] = reader[i].ToString();
+                }
+                dataGridView1.Rows.Add(fileds);
+            }
+
+            reader.Close();
+        }
+
+        private void DrawTable(string model, int tableIndex)  //Отрисовка выбранной таблицы 
+        {
+            dataGridView1.Columns.Clear();  //Отчистка таблицы на форме.
+            dataGridView1.Refresh();
+
+            string tableName = Enum.GetName(typeof(tables), tableIndex);
+            SQLiteCommand command = new SQLiteCommand($"SELECT * FROM {tableName} WHERE modelNum = \"{model}\"", dbConnection);
+            SQLiteDataReader reader = null;
+            reader = command.ExecuteReader();
+
+            for (int i = 0; i < columns[tableIndex].Length; ++i)
+            {
+                dataGridView1.Columns.Add("", columns[tableIndex][i]);
+            }
+
+            while (reader.Read())
+            {
+                string[] fileds = new string[reader.FieldCount];
+                for (int i = 0; i < reader.FieldCount; ++i)
+                {
+                    fileds[i] = reader[i].ToString();
+                }
+                dataGridView1.Rows.Add(fileds);
+            }
+
+            reader.Close();
+        }
+        #endregion Draw
+
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
 
@@ -93,6 +179,30 @@ namespace KursWork
         private void PrintDB_Click(object sender, EventArgs e)
         {
             DrawTable(SelectDB.SelectedIndex);
+        }
+
+        private void BtSearch_Click(object sender, EventArgs e) //Вывод только удовлетворяющией информации о устройстве.
+        {
+            string fullName = (Name.Text).Trim();
+            string model = (Model.Text).Trim();
+
+
+            if (NameCheckBox.Checked && ModelCheckBox.Checked)
+            {
+                DrawTable(0, fullName, model);
+            }
+            else if (NameCheckBox.Checked && !ModelCheckBox.Checked)
+            {
+                DrawTable(0, fullName);
+            }
+            else if(!NameCheckBox.Checked && ModelCheckBox.Checked)
+            {
+                DrawTable(model, 0);
+            }
+            else
+            {
+                MessageBox.Show("Выбирите по признак(и) для поиска.", "", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
         }
     }
 }
