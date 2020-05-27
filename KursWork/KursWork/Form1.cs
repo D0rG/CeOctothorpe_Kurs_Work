@@ -28,11 +28,19 @@ namespace KursWork
             ModelAndReason
         };
 
+        private enum status
+        {
+            expertise,
+            w8Money,
+            repair,
+            W8Owner
+        };
+
         //Выводимые названия колонок (индексы в enum и тут должны совпадать)
         string[][] columns =  
         {
-            new string[]{"Модельный номер", "Статус", "Время начала работы", "ФИО клиента", "Стоимость", "Причины поломки"},
-            new string[]{"Модельный номер", "Время начала работы", "Время окончания работы", "Стоимость ремонта"},
+            new string[]{"Модельный номер", "Статус", "Время начала работы", "ФИО клиента", "Стоимость", "Причины поломки", "Время завершения"},
+            new string[]{"Модельный номер", "Время начала работы", "Время окончания работы", "Стоимость ремонта", "ФИО"},
             new string[]{ "Причины поломок" },
             new string[]{ "Модельный номер", "Причина поломки" }
         };
@@ -91,6 +99,7 @@ namespace KursWork
                     }
                     catch (Exception e)
                     {
+                        ;
                     }
                 }
                 dataGridView1.Rows.Add(fileds);
@@ -187,8 +196,6 @@ namespace KursWork
         }
         #endregion Draw
 
-
-
         private void AddNewDevice(string name, string model)  //Отрисовка выбранной таблицы по имени и модели
         {
             dataGridView1.Columns.Clear();
@@ -238,9 +245,8 @@ namespace KursWork
                 AddNewDevice(fullName, model);
                 Name.Text = Model.Text = "";
             }
+            DrawTable(0);
         }
-
-
 
         private void AddDamageBttn_Click(object sender, EventArgs e)
         {
@@ -264,7 +270,6 @@ namespace KursWork
             }
         }
 
-
         private void delDamageBtn_Click(object sender, EventArgs e) //Удаляет один из типов выбраных повреждений
         {
             try
@@ -277,48 +282,50 @@ namespace KursWork
             }
         }
 
-       
-
         private void SetMark_Click(object sender, EventArgs e)  //Именение суммы и сохранение причин поломки.
         {
             double cost;
-
-            if (Double.TryParse(CostTB.Text, out cost) && lastTablePrint == 0)  //Вводить сумму можно только выбирая из таблицы с индексом 0
+            try
             {
-                string modelNum = dataGridView1[0, dataGridView1.SelectedRows[0].Index].Value.ToString();
-                string status = dataGridView1[1, dataGridView1.SelectedRows[0].Index].Value.ToString();
-                string startTime = dataGridView1[2, dataGridView1.SelectedRows[0].Index].Value.ToString();
-                string FIO = dataGridView1[3, dataGridView1.SelectedRows[0].Index].Value.ToString();
-                string reasons = null;
-
-                for(int i = 0; i < thisDamageList.Items.Count; ++i)
+                if (Double.TryParse(CostTB.Text, out cost) && lastTablePrint == 0)  //Вводить сумму можно только выбирая из таблицы с индексом 0
                 {
-                    reasons += thisDamageList.Items[i] + "*";
+                    string modelNum = dataGridView1[0, dataGridView1.SelectedRows[0].Index].Value.ToString();
+                    string status = dataGridView1[1, dataGridView1.SelectedRows[0].Index].Value.ToString();
+                    string startTime = dataGridView1[2, dataGridView1.SelectedRows[0].Index].Value.ToString();
+                    string FIO = dataGridView1[3, dataGridView1.SelectedRows[0].Index].Value.ToString();
+                    string reasons = null;
+
+                    for (int i = 0; i < thisDamageList.Items.Count; ++i)
+                    {
+                        reasons += thisDamageList.Items[i] + "*";
+                    }
+
+                    startTime = DateTime.Parse(startTime).ToString("yyyy-MM-dd HH:mm:ss");  //Переформирование даты в нужный  для поиска формат.
+
+                    dataGridView1.Columns.Clear();
+                    dataGridView1.Refresh();
+
+                    string tableName = Enum.GetName(typeof(tables), 0);
+                    SQLiteCommand command = new SQLiteCommand($"UPDATE {tableName} SET Cost='{cost}', reasons='{reasons}'  WHERE modelNum='{modelNum}' AND status='{status}' AND FIO='{FIO}' AND StartTime='{startTime}'", dbConnection);
+                    command.ExecuteNonQuery();
+
+                    CostTB.Text = "";
+                    SaveReason(modelNum);
+                    thisDamageList.Items.Clear();
+                    DrawTable(0);
                 }
-
-                MessageBox.Show(reasons);
-                startTime = DateTime.Parse(startTime).ToString("yyyy-MM-dd HH:mm:ss");  //Переформирование даты в нужный  для поиска формат.
-
-                dataGridView1.Columns.Clear();
-                dataGridView1.Refresh();
-
-                //Тут можно и причины сейвить
-                string tableName = Enum.GetName(typeof(tables), 0);
-                SQLiteCommand command = new SQLiteCommand($"UPDATE {tableName} SET Cost='{cost}', reasons='{reasons}'  WHERE modelNum='{modelNum}' AND status='{status}' AND FIO='{FIO}' AND StartTime='{startTime}'", dbConnection); // StartTime='{startTime}'
-                command.ExecuteNonQuery();
-
-                CostTB.Text = "";
-                SaveReason(modelNum);
-                thisDamageList.Items.Clear();
-                DrawTable(0);
+                else if (lastTablePrint != 0)
+                {
+                    MessageBox.Show("Попытка выбора не из той таблицы", "", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
+                else
+                {
+                    MessageBox.Show("Введено нерпавильное число.", "", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
             }
-            else if (lastTablePrint != 0)
+            catch
             {
-                MessageBox.Show("Попытка выбора не из той таблицы", "", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            }
-            else
-            {
-                MessageBox.Show("Введено нерпавильное число.", "", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                ;
             }
         }
 
@@ -348,6 +355,138 @@ namespace KursWork
                 }
             }
             reader.Close();
+        }
+
+        private void ChangeStatusBtn_Click(object sender, EventArgs e)  //Меняем статус экспертизы на починку.
+        {
+            ChangeStatus("repair", true);
+        }
+
+        private void ChangeW8StatusBtn_Click(object sender, EventArgs e)    //W8 Status
+        {
+            ChangeStatus("w8Money", false);
+        }  
+
+        private void ChangeStatus(string Status, bool setEndTime)    //Изменение статуса в таблице статуса
+        {
+            try
+            {
+                if (lastTablePrint == 0)
+                {
+                    string modelNum = dataGridView1[0, dataGridView1.SelectedRows[0].Index].Value.ToString();
+                    string status = dataGridView1[1, dataGridView1.SelectedRows[0].Index].Value.ToString();
+                    string startTime = dataGridView1[2, dataGridView1.SelectedRows[0].Index].Value.ToString();
+                    string FIO = dataGridView1[3, dataGridView1.SelectedRows[0].Index].Value.ToString();
+                    string Cost = dataGridView1[4, dataGridView1.SelectedRows[0].Index].Value.ToString();
+                    string reasons = dataGridView1[5, dataGridView1.SelectedRows[0].Index].Value.ToString();
+                    startTime = DateTime.Parse(startTime).ToString("yyyy-MM-dd HH:mm:ss");
+
+
+                    double cost;
+                    if (Double.TryParse(Cost, out cost))
+                    {
+                        string tableName = Enum.GetName(typeof(tables), 0);
+                        if (setEndTime)
+                        {
+                            string newStartTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+                            SQLiteCommand command = new SQLiteCommand($"UPDATE {tableName} SET status='{Status}', StartTime='{newStartTime}' WHERE modelNum='{modelNum}' AND status='{status}' AND FIO='{FIO}' AND StartTime='{startTime}' AND Cost='{Cost}' AND reasons='{reasons}'", dbConnection);
+                            command.ExecuteNonQuery();
+                        }
+                        else
+                        {
+                            SQLiteCommand command = new SQLiteCommand($"UPDATE {tableName} SET status='{Status}' WHERE modelNum='{modelNum}' AND status='{status}' AND FIO='{FIO}' AND StartTime='{startTime}' AND Cost='{Cost}' AND reasons='{reasons}'", dbConnection);
+                            command.ExecuteNonQuery();
+                        }
+                        DrawTable(0);
+                    }
+                    else
+                    {
+                        MessageBox.Show("Нельзя переместить не оценённое устройство.", "", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Выбрана не правильная таблица.", "", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
+            }
+            catch
+            {
+                ;
+            }
+        }
+
+        private void DelFromWipBtn_Click(object sender, EventArgs e)    //Удаление из первой таблицы и перенос в архивную таблицу
+        {
+            try
+            {
+                if (lastTablePrint == 0)
+                {
+                    string modelNum = dataGridView1[0, dataGridView1.SelectedRows[0].Index].Value.ToString();
+                    string status = dataGridView1[1, dataGridView1.SelectedRows[0].Index].Value.ToString();
+                    string startTime = dataGridView1[2, dataGridView1.SelectedRows[0].Index].Value.ToString();
+                    string FIO = dataGridView1[3, dataGridView1.SelectedRows[0].Index].Value.ToString();
+                    string Cost = dataGridView1[4, dataGridView1.SelectedRows[0].Index].Value.ToString();
+                    string reasons = dataGridView1[5, dataGridView1.SelectedRows[0].Index].Value.ToString();
+                    string endTime = dataGridView1[6, dataGridView1.SelectedRows[0].Index].Value.ToString();
+                    startTime = DateTime.Parse(startTime).ToString("yyyy-MM-dd HH:mm:ss");
+                    endTime = DateTime.Parse(endTime).ToString("yyyy-MM-dd HH:mm:ss");
+
+                    string tableName = Enum.GetName(typeof(tables), 0);
+                    SQLiteCommand command = new SQLiteCommand($"DELETE FROM {tableName} WHERE modelNum='{modelNum}' AND status='{status}' AND FIO='{FIO}' AND StartTime='{startTime}' AND Cost='{Cost}' AND reasons='{reasons}' AND EndTime='{endTime}'", dbConnection);
+                    command.ExecuteNonQuery();
+
+                    tableName = Enum.GetName(typeof(tables), 1);
+                    command = new SQLiteCommand($"INSERT INTO {tableName} (modelNum, StartTime, EndTime, cost, FIO) VALUES ('{modelNum}', '{startTime}', '{endTime}', '{Cost}', '{FIO}')", dbConnection);
+                    command.ExecuteNonQuery();
+                    DrawTable(0);
+                }
+            }
+            catch
+            {
+                ;
+            }
+        }
+
+        private void StopRepairBtn_Click(object sender, EventArgs e)    //Завершения починки устройства
+        {
+            try
+            {
+                if (lastTablePrint == 0)
+                {
+                    string modelNum = dataGridView1[0, dataGridView1.SelectedRows[0].Index].Value.ToString();
+                    string status = dataGridView1[1, dataGridView1.SelectedRows[0].Index].Value.ToString();
+                    string startTime = dataGridView1[2, dataGridView1.SelectedRows[0].Index].Value.ToString();
+                    string FIO = dataGridView1[3, dataGridView1.SelectedRows[0].Index].Value.ToString();
+                    string Cost = dataGridView1[4, dataGridView1.SelectedRows[0].Index].Value.ToString();
+                    string reasons = dataGridView1[5, dataGridView1.SelectedRows[0].Index].Value.ToString();
+                    startTime = DateTime.Parse(startTime).ToString("yyyy-MM-dd HH:mm:ss");
+
+
+                    double cost;
+                    if (Double.TryParse(Cost, out cost))
+                    {
+                        string tableName = Enum.GetName(typeof(tables), 0);
+
+                        string endTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+                        SQLiteCommand command = new SQLiteCommand($"UPDATE {tableName} SET EndTime='{endTime}', status='W8Owner' WHERE modelNum='{modelNum}' AND status='{status}' AND FIO='{FIO}' AND StartTime='{startTime}' AND Cost='{cost}' AND reasons='{reasons}'", dbConnection);
+                        command.ExecuteNonQuery();
+
+                        DrawTable(0);
+                    }
+                    else
+                    {
+                        MessageBox.Show("Нельзя переместить не оценённое устройство.", "", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Выбрана не правильная таблица.", "", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
+            }
+            catch
+            {
+                ;
+            }
         }
     }
 }

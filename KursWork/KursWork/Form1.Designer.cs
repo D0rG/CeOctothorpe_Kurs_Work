@@ -44,6 +44,11 @@
             this.label2 = new System.Windows.Forms.Label();
             this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.groupBox5 = new System.Windows.Forms.GroupBox();
+            this.DelFromWipBtn = new System.Windows.Forms.Button();
+            this.ChangeStatusBtn = new System.Windows.Forms.Button();
+            this.StopRepairBtn = new System.Windows.Forms.Button();
+            this.ChangeW8StatusBtn = new System.Windows.Forms.Button();
             this.DamageList = new System.Windows.Forms.ListBox();
             this.delDamageBtn = new System.Windows.Forms.Button();
             this.thisDamageList = new System.Windows.Forms.ListBox();
@@ -53,11 +58,13 @@
             this.lable = new System.Windows.Forms.Label();
             this.AddDamageBttn = new System.Windows.Forms.Button();
             this.label3 = new System.Windows.Forms.Label();
+            this.groupBox6 = new System.Windows.Forms.GroupBox();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox4.SuspendLayout();
             this.groupBox3.SuspendLayout();
+            this.groupBox5.SuspendLayout();
             this.SuspendLayout();
             // 
             // dataGridView1
@@ -140,7 +147,7 @@
             this.groupBox2.Controls.Add(this.label1);
             this.groupBox2.Location = new System.Drawing.Point(12, 291);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(431, 130);
+            this.groupBox2.Size = new System.Drawing.Size(431, 127);
             this.groupBox2.TabIndex = 7;
             this.groupBox2.TabStop = false;
             // 
@@ -204,6 +211,7 @@
             // 
             // groupBox3
             // 
+            this.groupBox3.Controls.Add(this.groupBox5);
             this.groupBox3.Controls.Add(this.DamageList);
             this.groupBox3.Controls.Add(this.delDamageBtn);
             this.groupBox3.Controls.Add(this.thisDamageList);
@@ -213,12 +221,65 @@
             this.groupBox3.Controls.Add(this.lable);
             this.groupBox3.Controls.Add(this.AddDamageBttn);
             this.groupBox3.Controls.Add(this.label3);
-            this.groupBox3.Location = new System.Drawing.Point(449, 298);
+            this.groupBox3.Location = new System.Drawing.Point(449, 291);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(461, 411);
+            this.groupBox3.Size = new System.Drawing.Size(461, 550);
             this.groupBox3.TabIndex = 8;
             this.groupBox3.TabStop = false;
-            this.groupBox3.Text = "Оценка ремонта";
+            this.groupBox3.Text = "Оценка и ремонт";
+            // 
+            // groupBox5
+            // 
+            this.groupBox5.Controls.Add(this.DelFromWipBtn);
+            this.groupBox5.Controls.Add(this.ChangeStatusBtn);
+            this.groupBox5.Controls.Add(this.StopRepairBtn);
+            this.groupBox5.Controls.Add(this.ChangeW8StatusBtn);
+            this.groupBox5.Location = new System.Drawing.Point(9, 409);
+            this.groupBox5.Name = "groupBox5";
+            this.groupBox5.Size = new System.Drawing.Size(446, 135);
+            this.groupBox5.TabIndex = 21;
+            this.groupBox5.TabStop = false;
+            this.groupBox5.Text = "Изменение статуса";
+            // 
+            // DelFromWipBtn
+            // 
+            this.DelFromWipBtn.Location = new System.Drawing.Point(6, 106);
+            this.DelFromWipBtn.Name = "DelFromWipBtn";
+            this.DelFromWipBtn.Size = new System.Drawing.Size(434, 23);
+            this.DelFromWipBtn.TabIndex = 23;
+            this.DelFromWipBtn.Text = "Устройство передано клиенту";
+            this.DelFromWipBtn.UseVisualStyleBackColor = true;
+            this.DelFromWipBtn.Click += new System.EventHandler(this.DelFromWipBtn_Click);
+            // 
+            // ChangeStatusBtn
+            // 
+            this.ChangeStatusBtn.Location = new System.Drawing.Point(6, 48);
+            this.ChangeStatusBtn.Name = "ChangeStatusBtn";
+            this.ChangeStatusBtn.Size = new System.Drawing.Size(434, 23);
+            this.ChangeStatusBtn.TabIndex = 21;
+            this.ChangeStatusBtn.Text = "Перевести устройство из экспертизы в починку";
+            this.ChangeStatusBtn.UseVisualStyleBackColor = true;
+            this.ChangeStatusBtn.Click += new System.EventHandler(this.ChangeStatusBtn_Click);
+            // 
+            // StopRepairBtn
+            // 
+            this.StopRepairBtn.Location = new System.Drawing.Point(6, 77);
+            this.StopRepairBtn.Name = "StopRepairBtn";
+            this.StopRepairBtn.Size = new System.Drawing.Size(434, 23);
+            this.StopRepairBtn.TabIndex = 24;
+            this.StopRepairBtn.Text = "Устройство починено, остановка починки";
+            this.StopRepairBtn.UseVisualStyleBackColor = true;
+            this.StopRepairBtn.Click += new System.EventHandler(this.StopRepairBtn_Click);
+            // 
+            // ChangeW8StatusBtn
+            // 
+            this.ChangeW8StatusBtn.Location = new System.Drawing.Point(6, 19);
+            this.ChangeW8StatusBtn.Name = "ChangeW8StatusBtn";
+            this.ChangeW8StatusBtn.Size = new System.Drawing.Size(434, 23);
+            this.ChangeW8StatusBtn.TabIndex = 22;
+            this.ChangeW8StatusBtn.Text = "Перевести в ожидание оплаты";
+            this.ChangeW8StatusBtn.UseVisualStyleBackColor = true;
+            this.ChangeW8StatusBtn.Click += new System.EventHandler(this.ChangeW8StatusBtn_Click);
             // 
             // DamageList
             // 
@@ -301,14 +362,25 @@
             this.label3.TabIndex = 12;
             this.label3.Text = "Список  повреждений: ";
             // 
+            // groupBox6
+            // 
+            this.groupBox6.Location = new System.Drawing.Point(12, 424);
+            this.groupBox6.Name = "groupBox6";
+            this.groupBox6.Size = new System.Drawing.Size(431, 147);
+            this.groupBox6.TabIndex = 9;
+            this.groupBox6.TabStop = false;
+            this.groupBox6.Text = "Вывод стат. данных";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(922, 922);
+            this.Controls.Add(this.groupBox6);
             this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
+            this.Name = "Form1";
             this.Text = "Курсач Мишани - Мишанин курсач";
             this.Load += new System.EventHandler(this.Form1_Load);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
@@ -319,6 +391,7 @@
             this.groupBox4.PerformLayout();
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
+            this.groupBox5.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -350,6 +423,12 @@
         private System.Windows.Forms.ListBox thisDamageList;
         private System.Windows.Forms.Button delDamageBtn;
         private System.Windows.Forms.ListBox DamageList;
+        private System.Windows.Forms.Button ChangeStatusBtn;
+        private System.Windows.Forms.Button ChangeW8StatusBtn;
+        private System.Windows.Forms.GroupBox groupBox5;
+        private System.Windows.Forms.Button DelFromWipBtn;
+        private System.Windows.Forms.Button StopRepairBtn;
+        private System.Windows.Forms.GroupBox groupBox6;
     }
 }
 
