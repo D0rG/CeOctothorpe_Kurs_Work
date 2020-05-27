@@ -18,18 +18,23 @@ namespace KursWork
         private String dbFileName = "DataBase.sqllite";
         private SQLiteConnection dbConnection;
         private SQLiteCommand dbCommand;
+        private byte lastTablePrint;    //Хранит индекс последней выведенной таблицы.
 
         private enum tables //Название таблиц, как в БД
         {
             DeviceInWork,
-            FinishedWork
+            FinishedWork,
+            Reasons,
+            ModelAndReason
         };
 
         //Выводимые названия колонок (индексы в enum и тут должны совпадать)
         string[][] columns =  
         {
-            new string[]{"Модельный номер", "Статус", "Время начала работы", "ФИО клиента", "Стоимость"},
-            new string[]{"Модельный номер", "Время начала работы", "Время окончания работы", "Стоимость ремонта"}
+            new string[]{"Модельный номер", "Статус", "Время начала работы", "ФИО клиента", "Стоимость", "Причины поломки"},
+            new string[]{"Модельный номер", "Время начала работы", "Время окончания работы", "Стоимость ремонта"},
+            new string[]{ "Причины поломок" },
+            new string[]{ "Модельный номер", "Причина поломки" }
         };
 
         public Form1()
@@ -55,11 +60,13 @@ namespace KursWork
         {
             dbCommand = new SQLiteCommand();
             DrawTable(0);
+            UpdDamageList();
         }
 
         #region Draw
-        private void DrawTable(int tableIndex)  //Отрисовка выбранной таблицы
+        private void DrawTable(int tableIndex)  //Отрисовка выбранной таблицы.
         {
+            lastTablePrint = (byte)tableIndex;
             dataGridView1.Columns.Clear();  //Отчистка таблицы на форме.
             dataGridView1.Refresh();
 
@@ -68,7 +75,7 @@ namespace KursWork
             SQLiteDataReader reader = null;
             reader = command.ExecuteReader();
 
-            for(int i = 0; i < columns[tableIndex].Length; ++i)
+            for(int i = 0; i < columns[tableIndex].Length; ++i) //Отрисовка названия столбов.
             {
                 dataGridView1.Columns.Add("", columns[tableIndex][i]);
             }
@@ -78,7 +85,13 @@ namespace KursWork
                 string[] fileds = new string[reader.FieldCount];
                 for(int i = 0; i < reader.FieldCount; ++i)
                 {
-                    fileds[i] = reader[i].ToString();
+                    try
+                    {
+                        fileds[i] = reader[i].ToString();
+                    }
+                    catch (Exception e)
+                    {
+                    }
                 }
                 dataGridView1.Rows.Add(fileds);
             }
@@ -88,6 +101,7 @@ namespace KursWork
 
         private void DrawTable(int tableIndex, string name, string model)  //Отрисовка выбранной таблицы по имени и модели
         {
+            lastTablePrint = (byte)tableIndex;
             dataGridView1.Columns.Clear();  //Отчистка таблицы на форме.
             dataGridView1.Refresh();
 
@@ -116,6 +130,7 @@ namespace KursWork
 
         private void DrawTable(int tableIndex, string name)  //Отрисовка выбранной таблицы
         {
+            lastTablePrint = (byte)tableIndex;
             dataGridView1.Columns.Clear();  //Отчистка таблицы на форме.
             dataGridView1.Refresh();
 
@@ -144,6 +159,7 @@ namespace KursWork
 
         private void DrawTable(string model, int tableIndex)  //Отрисовка выбранной таблицы 
         {
+            lastTablePrint = (byte)tableIndex;
             dataGridView1.Columns.Clear();  //Отчистка таблицы на форме.
             dataGridView1.Refresh();
 
@@ -171,9 +187,16 @@ namespace KursWork
         }
         #endregion Draw
 
-        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
-        {
 
+
+        private void AddNewDevice(string name, string model)  //Отрисовка выбранной таблицы по имени и модели
+        {
+            dataGridView1.Columns.Clear();
+            dataGridView1.Refresh();
+            string dateTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"); //Получение даты по формату DateTime в sql
+            string tableName = Enum.GetName(typeof(tables), 0);
+            SQLiteCommand command = new SQLiteCommand($"INSERT INTO {tableName} (modelNum, Status, FIO, StartTime) VALUES ('{model}', 'expertise', '{name}', '{dateTime}')", dbConnection);
+            command.ExecuteNonQuery();
         }
 
         private void PrintDB_Click(object sender, EventArgs e)
@@ -187,22 +210,144 @@ namespace KursWork
             string model = (Model.Text).Trim();
 
 
-            if (NameCheckBox.Checked && ModelCheckBox.Checked)
+            if (NameCheckBox.Checked && ModelCheckBox.Checked && Name.Text != "" && Model.Text != "")
             {
                 DrawTable(0, fullName, model);
             }
-            else if (NameCheckBox.Checked && !ModelCheckBox.Checked)
+            else if (NameCheckBox.Checked && !ModelCheckBox.Checked && Name.Text != "")
             {
                 DrawTable(0, fullName);
             }
-            else if(!NameCheckBox.Checked && ModelCheckBox.Checked)
+            else if(!NameCheckBox.Checked && ModelCheckBox.Checked && Model.Text != "")
             {
                 DrawTable(model, 0);
             }
             else
             {
-                MessageBox.Show("Выбирите по признак(и) для поиска.", "", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("Выбирите признак(и) для поиска.", "", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
+        }
+
+        private void AddButton_Click(object sender, EventArgs e)    //Добавляет девайс в таблицу и отрпавляет его на экспертизу
+        {
+            string fullName = (Name.Text).Trim();
+            string model = (Model.Text).Trim();
+
+            if(fullName != "" && model != "")
+            {
+                AddNewDevice(fullName, model);
+                Name.Text = Model.Text = "";
+            }
+        }
+
+
+
+        private void AddDamageBttn_Click(object sender, EventArgs e)
+        {
+            AddDamage();
+        }
+
+        private void DamageList_DoubleClick(object sender, EventArgs e)
+        {
+            AddDamage();
+        }
+
+        private void AddDamage()    //Переносит причину из списка возможных причин в список причин
+        {
+            try
+            {
+                thisDamageList.Items.Add(DamageList.SelectedItem);  //Не ограничивал повтор причин, т.к. причины могут повторяться.
+            }
+            catch
+            {
+                MessageBox.Show("Элемент не был выбран.", "", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+        }
+
+
+        private void delDamageBtn_Click(object sender, EventArgs e) //Удаляет один из типов выбраных повреждений
+        {
+            try
+            {
+                thisDamageList.Items.RemoveAt(thisDamageList.SelectedIndex);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Вы не выбрали элемент.", "", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+        }
+
+       
+
+        private void SetMark_Click(object sender, EventArgs e)  //Именение суммы и сохранение причин поломки.
+        {
+            double cost;
+
+            if (Double.TryParse(CostTB.Text, out cost) && lastTablePrint == 0)  //Вводить сумму можно только выбирая из таблицы с индексом 0
+            {
+                string modelNum = dataGridView1[0, dataGridView1.SelectedRows[0].Index].Value.ToString();
+                string status = dataGridView1[1, dataGridView1.SelectedRows[0].Index].Value.ToString();
+                string startTime = dataGridView1[2, dataGridView1.SelectedRows[0].Index].Value.ToString();
+                string FIO = dataGridView1[3, dataGridView1.SelectedRows[0].Index].Value.ToString();
+                string reasons = null;
+
+                for(int i = 0; i < thisDamageList.Items.Count; ++i)
+                {
+                    reasons += thisDamageList.Items[i] + "*";
+                }
+
+                MessageBox.Show(reasons);
+                startTime = DateTime.Parse(startTime).ToString("yyyy-MM-dd HH:mm:ss");  //Переформирование даты в нужный  для поиска формат.
+
+                dataGridView1.Columns.Clear();
+                dataGridView1.Refresh();
+
+                //Тут можно и причины сейвить
+                string tableName = Enum.GetName(typeof(tables), 0);
+                SQLiteCommand command = new SQLiteCommand($"UPDATE {tableName} SET Cost='{cost}', reasons='{reasons}'  WHERE modelNum='{modelNum}' AND status='{status}' AND FIO='{FIO}' AND StartTime='{startTime}'", dbConnection); // StartTime='{startTime}'
+                command.ExecuteNonQuery();
+
+                CostTB.Text = "";
+                SaveReason(modelNum);
+                thisDamageList.Items.Clear();
+                DrawTable(0);
+            }
+            else if (lastTablePrint != 0)
+            {
+                MessageBox.Show("Попытка выбора не из той таблицы", "", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+            else
+            {
+                MessageBox.Show("Введено нерпавильное число.", "", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+        }
+
+        private void SaveReason(string modelNum)    //Сохранение всех поврежденй по модели.
+        {
+            for(int i = 0; i < thisDamageList.Items.Count; ++i)
+            {
+                SQLiteCommand command = new SQLiteCommand($"INSERT INTO ModelAndReason (modelNum, reason) VALUES ('{modelNum}', '{thisDamageList.Items[i]}')", dbConnection);
+                command.ExecuteNonQuery();
+            }
+        }
+
+        private void UpdDamageList()    //Подтягивает список возможных повреждений из БД.
+        {
+            int tableIndex = 2;
+            string tableName = Enum.GetName(typeof(tables), tableIndex);
+            SQLiteCommand command = new SQLiteCommand($"SELECT * FROM {tableName}", dbConnection);
+            SQLiteDataReader reader = null;
+            reader = command.ExecuteReader();
+
+            while (reader.Read())
+            {
+                string[] fileds = new string[reader.FieldCount];
+                for (int i = 0; i < reader.FieldCount; ++i)
+                {
+                    DamageList.Items.Add(reader[i].ToString());
+                }
+            }
+            reader.Close();
         }
     }
 }
