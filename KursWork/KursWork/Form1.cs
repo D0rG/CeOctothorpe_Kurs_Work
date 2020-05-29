@@ -1,14 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Data.SQLite;
-using System.Data;
 using System.IO;
 
 namespace KursWork
@@ -19,13 +12,23 @@ namespace KursWork
         private SQLiteConnection dbConnection;
         private SQLiteCommand dbCommand;
         private byte lastTablePrint;    //Хранит индекс последней выведенной таблицы.
+        private byte userStatus = 1;    //1 - индекс не залогиненого в перечилсении permission
 
-        private enum tables //Название таблиц, как в БД
+        public enum permission
+        {
+            admin,
+            notLogged,
+            user,
+            guest
+        };
+
+        public enum tables //Название таблиц, как в БД
         {
             DeviceInWork,
             FinishedWork,
             Reasons,
-            ModelAndReason
+            ModelAndReason,
+            Users
         };
 
         private enum status
@@ -42,7 +45,8 @@ namespace KursWork
             new string[]{"Модельный номер", "Статус", "Время начала работы", "ФИО клиента", "Стоимость", "Причины поломки", "Время завершения"},
             new string[]{"Модельный номер", "Время начала работы", "Время окончания работы", "Стоимость ремонта", "ФИО"},
             new string[]{ "Причины поломок" },
-            new string[]{ "Модельный номер", "Причина поломки" }
+            new string[]{ "Модельный номер", "Причина поломки" },
+            new string[]{ "Логин", "Пароль", "Права" }
         };
 
         public Form1()
@@ -69,6 +73,10 @@ namespace KursWork
             dbCommand = new SQLiteCommand();
             DrawTable(0);
             UpdDamageList();
+            this.WindowState = FormWindowState.Minimized;
+            Enabled = false;    //Выключаем эту форму, ждём логина
+            Form2 form = new Form2(this);
+            form.Show();
         }
 
         #region Draw
@@ -196,7 +204,7 @@ namespace KursWork
         }
         #endregion Draw
 
-        private void AddNewDevice(string name, string model)  //Отрисовка выбранной таблицы по имени и модели
+        private void AddNewDevice(string name, string model)    //Добавление нового девайса.
         {
             dataGridView1.Columns.Clear();
             dataGridView1.Refresh();
@@ -338,8 +346,9 @@ namespace KursWork
             }
         }
 
-        private void UpdDamageList()    //Подтягивает список возможных повреждений из БД.
+        public void UpdDamageList()    //Подтягивает список возможных повреждений из БД.
         {
+            DamageList.Items.Clear();
             int tableIndex = 2;
             string tableName = Enum.GetName(typeof(tables), tableIndex);
             SQLiteCommand command = new SQLiteCommand($"SELECT * FROM {tableName}", dbConnection);
@@ -487,6 +496,143 @@ namespace KursWork
             {
                 ;
             }
+        }
+
+        private void AvarageTimeBtn_Click(object sender, EventArgs e)   //Cреднее время ремонта определённой модели
+        {
+            List<double> times = new List<double>();
+            byte tableIndex = 1;
+            lastTablePrint = (byte)tableIndex;
+
+            string tableName = Enum.GetName(typeof(tables), tableIndex);
+            SQLiteCommand command = new SQLiteCommand($"SELECT StartTime, EndTime FROM {tableName} WHERE modelNum ='{ModelNumTb.Text}'", dbConnection);
+            SQLiteDataReader reader = command.ExecuteReader();
+
+            while (reader.Read())
+            {
+                string[] fileds = new string[reader.FieldCount];
+                for (int i = 0; i < reader.FieldCount; ++i)
+                {
+                    fileds[i] = reader[i].ToString();
+                }
+                TimeSpan deltaTime = DateTime.Parse(fileds[1]) - DateTime.Parse(fileds[0]); //Считает разницу.
+                times.Add(deltaTime.TotalHours);    //Кол-во часов которое ремонтировалось устройство.
+            }
+
+            reader.Close();
+
+            if (times.Count != 0)
+            {
+                double res = 0;
+                for (int i = 0; i < times.Count; ++i)
+                {
+                    res += times[i];
+                }
+                res /= times.Count;
+                MessageBox.Show($"Среднее время ремонта устройств с модельным номером {ModelNumTb.Text} составляет {res} часов", "Результат вашего запроса.", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            else
+            {
+                MessageBox.Show("Не найдено информации о устройстве.", "Результат вашего запроса.", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+        }
+
+        private void AvarageCostBtn_Click(object sender, EventArgs e)   //Средняя стоимость ремонта по модели
+        {
+            List<double> costs = new List<double>();
+            byte tableIndex = 1;
+            lastTablePrint = (byte)tableIndex;
+
+            string tableName = Enum.GetName(typeof(tables), tableIndex);
+            SQLiteCommand command = new SQLiteCommand($"SELECT cost FROM {tableName} WHERE modelNum ='{ModelNumTb.Text}'", dbConnection);
+            SQLiteDataReader reader = command.ExecuteReader();
+
+            while (reader.Read())
+            {
+                string[] fileds = new string[reader.FieldCount];
+                
+                for (int i = 0; i < reader.FieldCount; ++i)
+                {
+                    fileds[i] = reader[i].ToString();
+                }
+
+                costs.Add(Convert.ToDouble(reader[0]));
+            }
+
+            reader.Close();
+
+            if (costs.Count != 0)
+            {
+                double res = 0;
+                for (int i = 0; i < costs.Count; ++i)
+                {
+                    res += costs[i];
+                }
+                res /= costs.Count;
+                MessageBox.Show($"Средняя стоимость ремонта устройств с модельным номером {ModelNumTb.Text} составляет {res}", "Результат вашего запроса.", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            else
+            {
+                MessageBox.Show("Не найдено информации о устройстве.", "Результат вашего запроса.", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+        }
+
+        private void MainReasonBtn_Click(object sender, EventArgs e)    //Основная причина ремонта по модели
+        {
+            List<double> costs = new List<double>();
+            byte tableIndex = 3;
+            lastTablePrint = (byte)tableIndex;
+
+            string tableName = Enum.GetName(typeof(tables), tableIndex);
+            SQLiteCommand command = new SQLiteCommand($"SELECT reason FROM {tableName} WHERE modelNum ='{ModelNumTb.Text}' GROUP BY reason ORDER BY count(*) DESC LIMIT 1", dbConnection);
+            SQLiteDataReader reader = command.ExecuteReader();
+
+            while (reader.Read())
+            {
+                if(reader.FieldCount != 0)
+                {
+                    MessageBox.Show($"Для устройства с модельным номером {ModelNumTb.Text} самой частой причиной поломки является: {reader[0].ToString()}", "Результат вашего запроса.", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    reader.Close();
+                    return;
+                }
+            }
+            reader.Close();
+            MessageBox.Show($"Информация не найдедна.", "Результат вашего запроса.", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        public void LoginProgramm(string statusUser)
+        {
+            Enabled = true;
+            this.WindowState = FormWindowState.Normal;
+
+            if (statusUser == "admin")
+            {
+                userStatus = 0;
+                SelectDB.Items.Add("Возможные причины поломок");
+                SelectDB.Items.Add("Модели и повреждения");
+                SelectDB.Items.Add("Пользователи");
+            }
+            else if (statusUser == "user")
+            {
+                userStatus = 2;
+                GroupBoxAdmin.Enabled = false;
+            }
+            else if(statusUser == "guest")
+            {
+                userStatus = 3;
+                GroupBoxReasons.Enabled = GroupBoxSearch.Enabled = GroupBoxStat.Enabled = GroupBoxAdmin.Enabled = false;
+            }
+        }
+
+        public SQLiteConnection GetDBConnection()
+        {
+            return dbConnection;
+        }
+
+        private void AdminBtn_Click(object sender, EventArgs e)
+        {
+            Form3 form3 = new Form3(this);
+            form3.Show();
         }
     }
 }

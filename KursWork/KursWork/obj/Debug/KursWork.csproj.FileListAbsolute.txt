@@ -42,3 +42,5 @@ E:\GITproject\CeOctothorpe_Kurs_Work\KursWork\KursWork\obj\Debug\KursWork.csproj
 E:\GITproject\CeOctothorpe_Kurs_Work\KursWork\KursWork\obj\Debug\KursWork.csproj.CopyComplete
 E:\GITproject\CeOctothorpe_Kurs_Work\KursWork\KursWork\obj\Debug\KursWork.exe
 E:\GITproject\CeOctothorpe_Kurs_Work\KursWork\KursWork\obj\Debug\KursWork.pdb
+E:\GITproject\CeOctothorpe_Kurs_Work\KursWork\KursWork\obj\Debug\KursWork.Form2.resources
+E:\GITproject\CeOctothorpe_Kurs_Work\KursWork\KursWork\obj\Debug\KursWork.Form3.resources

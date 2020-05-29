@@ -35,7 +35,7 @@
             this.BtSearch = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.Name = new System.Windows.Forms.TextBox();
-            this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.GroupBoxSearch = new System.Windows.Forms.GroupBox();
             this.AddButton = new System.Windows.Forms.Button();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.ModelCheckBox = new System.Windows.Forms.CheckBox();
@@ -43,7 +43,7 @@
             this.Model = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
             this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
-            this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.GroupBoxReasons = new System.Windows.Forms.GroupBox();
             this.groupBox5 = new System.Windows.Forms.GroupBox();
             this.DelFromWipBtn = new System.Windows.Forms.Button();
             this.ChangeStatusBtn = new System.Windows.Forms.Button();
@@ -58,13 +58,22 @@
             this.lable = new System.Windows.Forms.Label();
             this.AddDamageBttn = new System.Windows.Forms.Button();
             this.label3 = new System.Windows.Forms.Label();
-            this.groupBox6 = new System.Windows.Forms.GroupBox();
+            this.GroupBoxStat = new System.Windows.Forms.GroupBox();
+            this.MainReasonBtn = new System.Windows.Forms.Button();
+            this.AvarageCostBtn = new System.Windows.Forms.Button();
+            this.AvarageTimeBtn = new System.Windows.Forms.Button();
+            this.ModelNumTb = new System.Windows.Forms.TextBox();
+            this.label4 = new System.Windows.Forms.Label();
+            this.GroupBoxAdmin = new System.Windows.Forms.GroupBox();
+            this.AdminBtn = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.groupBox1.SuspendLayout();
-            this.groupBox2.SuspendLayout();
+            this.GroupBoxSearch.SuspendLayout();
             this.groupBox4.SuspendLayout();
-            this.groupBox3.SuspendLayout();
+            this.GroupBoxReasons.SuspendLayout();
             this.groupBox5.SuspendLayout();
+            this.GroupBoxStat.SuspendLayout();
+            this.GroupBoxAdmin.SuspendLayout();
             this.SuspendLayout();
             // 
             // dataGridView1
@@ -137,19 +146,19 @@
             this.Name.Size = new System.Drawing.Size(228, 20);
             this.Name.TabIndex = 6;
             // 
-            // groupBox2
+            // GroupBoxSearch
             // 
-            this.groupBox2.Controls.Add(this.AddButton);
-            this.groupBox2.Controls.Add(this.groupBox4);
-            this.groupBox2.Controls.Add(this.Model);
-            this.groupBox2.Controls.Add(this.label2);
-            this.groupBox2.Controls.Add(this.Name);
-            this.groupBox2.Controls.Add(this.label1);
-            this.groupBox2.Location = new System.Drawing.Point(12, 291);
-            this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(431, 127);
-            this.groupBox2.TabIndex = 7;
-            this.groupBox2.TabStop = false;
+            this.GroupBoxSearch.Controls.Add(this.AddButton);
+            this.GroupBoxSearch.Controls.Add(this.groupBox4);
+            this.GroupBoxSearch.Controls.Add(this.Model);
+            this.GroupBoxSearch.Controls.Add(this.label2);
+            this.GroupBoxSearch.Controls.Add(this.Name);
+            this.GroupBoxSearch.Controls.Add(this.label1);
+            this.GroupBoxSearch.Location = new System.Drawing.Point(12, 291);
+            this.GroupBoxSearch.Name = "GroupBoxSearch";
+            this.GroupBoxSearch.Size = new System.Drawing.Size(431, 127);
+            this.GroupBoxSearch.TabIndex = 7;
+            this.GroupBoxSearch.TabStop = false;
             // 
             // AddButton
             // 
@@ -209,24 +218,24 @@
             this.label2.TabIndex = 7;
             this.label2.Text = "Модель:";
             // 
-            // groupBox3
+            // GroupBoxReasons
             // 
-            this.groupBox3.Controls.Add(this.groupBox5);
-            this.groupBox3.Controls.Add(this.DamageList);
-            this.groupBox3.Controls.Add(this.delDamageBtn);
-            this.groupBox3.Controls.Add(this.thisDamageList);
-            this.groupBox3.Controls.Add(this.SetMark);
-            this.groupBox3.Controls.Add(this.CostTB);
-            this.groupBox3.Controls.Add(this.label5);
-            this.groupBox3.Controls.Add(this.lable);
-            this.groupBox3.Controls.Add(this.AddDamageBttn);
-            this.groupBox3.Controls.Add(this.label3);
-            this.groupBox3.Location = new System.Drawing.Point(449, 291);
-            this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(461, 550);
-            this.groupBox3.TabIndex = 8;
-            this.groupBox3.TabStop = false;
-            this.groupBox3.Text = "Оценка и ремонт";
+            this.GroupBoxReasons.Controls.Add(this.groupBox5);
+            this.GroupBoxReasons.Controls.Add(this.DamageList);
+            this.GroupBoxReasons.Controls.Add(this.delDamageBtn);
+            this.GroupBoxReasons.Controls.Add(this.thisDamageList);
+            this.GroupBoxReasons.Controls.Add(this.SetMark);
+            this.GroupBoxReasons.Controls.Add(this.CostTB);
+            this.GroupBoxReasons.Controls.Add(this.label5);
+            this.GroupBoxReasons.Controls.Add(this.lable);
+            this.GroupBoxReasons.Controls.Add(this.AddDamageBttn);
+            this.GroupBoxReasons.Controls.Add(this.label3);
+            this.GroupBoxReasons.Location = new System.Drawing.Point(449, 291);
+            this.GroupBoxReasons.Name = "GroupBoxReasons";
+            this.GroupBoxReasons.Size = new System.Drawing.Size(461, 550);
+            this.GroupBoxReasons.TabIndex = 8;
+            this.GroupBoxReasons.TabStop = false;
+            this.GroupBoxReasons.Text = "Оценка и ремонт";
             // 
             // groupBox5
             // 
@@ -362,36 +371,111 @@
             this.label3.TabIndex = 12;
             this.label3.Text = "Список  повреждений: ";
             // 
-            // groupBox6
+            // GroupBoxStat
             // 
-            this.groupBox6.Location = new System.Drawing.Point(12, 424);
-            this.groupBox6.Name = "groupBox6";
-            this.groupBox6.Size = new System.Drawing.Size(431, 147);
-            this.groupBox6.TabIndex = 9;
-            this.groupBox6.TabStop = false;
-            this.groupBox6.Text = "Вывод стат. данных";
+            this.GroupBoxStat.Controls.Add(this.MainReasonBtn);
+            this.GroupBoxStat.Controls.Add(this.AvarageCostBtn);
+            this.GroupBoxStat.Controls.Add(this.AvarageTimeBtn);
+            this.GroupBoxStat.Controls.Add(this.ModelNumTb);
+            this.GroupBoxStat.Controls.Add(this.label4);
+            this.GroupBoxStat.Location = new System.Drawing.Point(12, 424);
+            this.GroupBoxStat.Name = "GroupBoxStat";
+            this.GroupBoxStat.Size = new System.Drawing.Size(431, 134);
+            this.GroupBoxStat.TabIndex = 9;
+            this.GroupBoxStat.TabStop = false;
+            this.GroupBoxStat.Text = "Вывод стат. данных";
+            // 
+            // MainReasonBtn
+            // 
+            this.MainReasonBtn.Location = new System.Drawing.Point(15, 103);
+            this.MainReasonBtn.Name = "MainReasonBtn";
+            this.MainReasonBtn.Size = new System.Drawing.Size(400, 23);
+            this.MainReasonBtn.TabIndex = 16;
+            this.MainReasonBtn.Text = "Основная причина ремонта";
+            this.MainReasonBtn.UseVisualStyleBackColor = true;
+            this.MainReasonBtn.Click += new System.EventHandler(this.MainReasonBtn_Click);
+            // 
+            // AvarageCostBtn
+            // 
+            this.AvarageCostBtn.Location = new System.Drawing.Point(15, 74);
+            this.AvarageCostBtn.Name = "AvarageCostBtn";
+            this.AvarageCostBtn.Size = new System.Drawing.Size(400, 23);
+            this.AvarageCostBtn.TabIndex = 15;
+            this.AvarageCostBtn.Text = "Средняя стоимость ремонта";
+            this.AvarageCostBtn.UseVisualStyleBackColor = true;
+            this.AvarageCostBtn.Click += new System.EventHandler(this.AvarageCostBtn_Click);
+            // 
+            // AvarageTimeBtn
+            // 
+            this.AvarageTimeBtn.Location = new System.Drawing.Point(15, 45);
+            this.AvarageTimeBtn.Name = "AvarageTimeBtn";
+            this.AvarageTimeBtn.Size = new System.Drawing.Size(400, 23);
+            this.AvarageTimeBtn.TabIndex = 14;
+            this.AvarageTimeBtn.Text = "Среднее время ремонта";
+            this.AvarageTimeBtn.UseVisualStyleBackColor = true;
+            this.AvarageTimeBtn.Click += new System.EventHandler(this.AvarageTimeBtn_Click);
+            // 
+            // ModelNumTb
+            // 
+            this.ModelNumTb.Location = new System.Drawing.Point(67, 19);
+            this.ModelNumTb.Name = "ModelNumTb";
+            this.ModelNumTb.Size = new System.Drawing.Size(348, 20);
+            this.ModelNumTb.TabIndex = 13;
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(12, 22);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(49, 13);
+            this.label4.TabIndex = 12;
+            this.label4.Text = "Модель:";
+            // 
+            // GroupBoxAdmin
+            // 
+            this.GroupBoxAdmin.Controls.Add(this.AdminBtn);
+            this.GroupBoxAdmin.Location = new System.Drawing.Point(12, 565);
+            this.GroupBoxAdmin.Name = "GroupBoxAdmin";
+            this.GroupBoxAdmin.Size = new System.Drawing.Size(431, 54);
+            this.GroupBoxAdmin.TabIndex = 10;
+            this.GroupBoxAdmin.TabStop = false;
+            // 
+            // AdminBtn
+            // 
+            this.AdminBtn.Location = new System.Drawing.Point(9, 19);
+            this.AdminBtn.Name = "AdminBtn";
+            this.AdminBtn.Size = new System.Drawing.Size(416, 29);
+            this.AdminBtn.TabIndex = 11;
+            this.AdminBtn.Text = "Панель администратора";
+            this.AdminBtn.UseVisualStyleBackColor = true;
+            this.AdminBtn.Click += new System.EventHandler(this.AdminBtn_Click);
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(922, 922);
-            this.Controls.Add(this.groupBox6);
-            this.Controls.Add(this.groupBox3);
-            this.Controls.Add(this.groupBox2);
+            this.ClientSize = new System.Drawing.Size(922, 848);
+            this.Controls.Add(this.GroupBoxAdmin);
+            this.Controls.Add(this.GroupBoxStat);
+            this.Controls.Add(this.GroupBoxReasons);
+            this.Controls.Add(this.GroupBoxSearch);
             this.Controls.Add(this.groupBox1);
-            this.Name = "Form1";
+            this.MaximumSize = new System.Drawing.Size(938, 887);
+            this.MinimumSize = new System.Drawing.Size(938, 887);
             this.Text = "Курсач Мишани - Мишанин курсач";
             this.Load += new System.EventHandler(this.Form1_Load);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             this.groupBox1.ResumeLayout(false);
-            this.groupBox2.ResumeLayout(false);
-            this.groupBox2.PerformLayout();
+            this.GroupBoxSearch.ResumeLayout(false);
+            this.GroupBoxSearch.PerformLayout();
             this.groupBox4.ResumeLayout(false);
             this.groupBox4.PerformLayout();
-            this.groupBox3.ResumeLayout(false);
-            this.groupBox3.PerformLayout();
+            this.GroupBoxReasons.ResumeLayout(false);
+            this.GroupBoxReasons.PerformLayout();
             this.groupBox5.ResumeLayout(false);
+            this.GroupBoxStat.ResumeLayout(false);
+            this.GroupBoxStat.PerformLayout();
+            this.GroupBoxAdmin.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -405,7 +489,7 @@
         private System.Windows.Forms.Button BtSearch;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TextBox Name;
-        private System.Windows.Forms.GroupBox groupBox2;
+        private System.Windows.Forms.GroupBox GroupBoxSearch;
         private System.Windows.Forms.TextBox Model;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.CheckBox NameCheckBox;
@@ -413,7 +497,7 @@
         private System.Windows.Forms.Button AddButton;
         private System.Windows.Forms.GroupBox groupBox4;
         private System.ComponentModel.BackgroundWorker backgroundWorker1;
-        private System.Windows.Forms.GroupBox groupBox3;
+        private System.Windows.Forms.GroupBox GroupBoxReasons;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label lable;
         private System.Windows.Forms.Button AddDamageBttn;
@@ -428,7 +512,14 @@
         private System.Windows.Forms.GroupBox groupBox5;
         private System.Windows.Forms.Button DelFromWipBtn;
         private System.Windows.Forms.Button StopRepairBtn;
-        private System.Windows.Forms.GroupBox groupBox6;
+        private System.Windows.Forms.GroupBox GroupBoxStat;
+        private System.Windows.Forms.Button AvarageTimeBtn;
+        private System.Windows.Forms.TextBox ModelNumTb;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Button MainReasonBtn;
+        private System.Windows.Forms.Button AvarageCostBtn;
+        private System.Windows.Forms.GroupBox GroupBoxAdmin;
+        private System.Windows.Forms.Button AdminBtn;
     }
 }
 
