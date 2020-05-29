@@ -53,26 +53,12 @@ namespace KursWork
         {
             InitializeComponent();
 
-            if(!File.Exists(dbFileName))    //Если с программой нет БД, то выкидываем ошибку и вырубаем приложение.
-            {
-                MessageBox.Show("Файла базы данных не существует, приложение будет остановелно.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                Environment.Exit(0);
-            }
-            else
-            {
-                dbConnection = new SQLiteConnection("Data Source=" + dbFileName);
-                dbConnection.Open();
-            }
-
             SelectDB.SelectedIndex = 0;
             SelectDB.DropDownStyle = ComboBoxStyle.DropDownList;    //Не нашел в визуалке, сделал так. (запрет ввода в комбобокс)
         }
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            dbCommand = new SQLiteCommand();
-            DrawTable(0);
-            UpdDamageList();
             this.WindowState = FormWindowState.Minimized;
             Enabled = false;    //Выключаем эту форму, ждём логина
             Form2 form = new Form2(this);
@@ -600,7 +586,7 @@ namespace KursWork
             MessageBox.Show($"Информация не найдедна.", "Результат вашего запроса.", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
-        public void LoginProgramm(string statusUser)
+        public void LoginProgramm(string statusUser)    //Настройка формы под тип польозователя.
         {
             Enabled = true;
             this.WindowState = FormWindowState.Normal;
@@ -633,6 +619,36 @@ namespace KursWork
         {
             Form3 form3 = new Form3(this);
             form3.Show();
+        }
+
+        private void UpdBtn_Click(object sender, EventArgs e)
+        {
+            UpdDamageList();
+        }
+
+        public void SetNameDB(string name = "DataBase.sqllite")     //Подключение к БД.
+        {
+            dbFileName = name;
+            if (File.Exists(dbFileName)) {
+                try
+                {
+                    dbConnection = new SQLiteConnection("Data Source=" + dbFileName);
+                    dbConnection.Open();
+                    dbCommand = new SQLiteCommand();
+                    DrawTable(0);
+                    UpdDamageList();
+                }
+                catch
+                {
+                    MessageBox.Show("Не удалось подключиться к базе данных. Приложение будет остановлено.", "", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    Environment.Exit(0);
+                }
+            }
+            else
+            {
+                MessageBox.Show("Файла базы данных не существует, приложение будет остановелно.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Environment.Exit(0);
+            }
         }
     }
 }

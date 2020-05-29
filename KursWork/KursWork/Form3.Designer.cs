@@ -30,18 +30,18 @@
         {
             this.AddReasonBtn = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.label1 = new System.Windows.Forms.Label();
             this.reasonTB = new System.Windows.Forms.TextBox();
+            this.label1 = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.adminRB = new System.Windows.Forms.RadioButton();
-            this.guestRB = new System.Windows.Forms.RadioButton();
-            this.userRB = new System.Windows.Forms.RadioButton();
-            this.LoginTB = new System.Windows.Forms.TextBox();
-            this.label2 = new System.Windows.Forms.Label();
-            this.label3 = new System.Windows.Forms.Label();
-            this.PassTB = new System.Windows.Forms.TextBox();
-            this.AddUserBtn = new System.Windows.Forms.Button();
             this.DelUserBtn = new System.Windows.Forms.Button();
+            this.AddUserBtn = new System.Windows.Forms.Button();
+            this.PassTB = new System.Windows.Forms.TextBox();
+            this.label3 = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
+            this.LoginTB = new System.Windows.Forms.TextBox();
+            this.userRB = new System.Windows.Forms.RadioButton();
+            this.guestRB = new System.Windows.Forms.RadioButton();
+            this.adminRB = new System.Windows.Forms.RadioButton();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.SuspendLayout();
@@ -67,21 +67,21 @@
             this.groupBox1.TabIndex = 1;
             this.groupBox1.TabStop = false;
             // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(6, 16);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(152, 13);
-            this.label1.TabIndex = 1;
-            this.label1.Text = "Возмоная причина поломки:";
-            // 
             // reasonTB
             // 
             this.reasonTB.Location = new System.Drawing.Point(9, 32);
             this.reasonTB.Name = "reasonTB";
             this.reasonTB.Size = new System.Drawing.Size(414, 20);
             this.reasonTB.TabIndex = 2;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(6, 16);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(160, 13);
+            this.label1.TabIndex = 1;
+            this.label1.Text = "Возможная причина поломки:";
             // 
             // groupBox2
             // 
@@ -101,27 +101,57 @@
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Пользователи";
             // 
-            // adminRB
+            // DelUserBtn
             // 
-            this.adminRB.AutoSize = true;
-            this.adminRB.Location = new System.Drawing.Point(6, 19);
-            this.adminRB.Name = "adminRB";
-            this.adminRB.Size = new System.Drawing.Size(58, 17);
-            this.adminRB.TabIndex = 0;
-            this.adminRB.TabStop = true;
-            this.adminRB.Text = "Aдмин";
-            this.adminRB.UseVisualStyleBackColor = true;
+            this.DelUserBtn.Location = new System.Drawing.Point(236, 65);
+            this.DelUserBtn.Name = "DelUserBtn";
+            this.DelUserBtn.Size = new System.Drawing.Size(187, 23);
+            this.DelUserBtn.TabIndex = 6;
+            this.DelUserBtn.Text = "Удалить";
+            this.DelUserBtn.UseVisualStyleBackColor = true;
+            this.DelUserBtn.Click += new System.EventHandler(this.DelUserBtn_Click);
             // 
-            // guestRB
+            // AddUserBtn
             // 
-            this.guestRB.AutoSize = true;
-            this.guestRB.Location = new System.Drawing.Point(6, 42);
-            this.guestRB.Name = "guestRB";
-            this.guestRB.Size = new System.Drawing.Size(54, 17);
-            this.guestRB.TabIndex = 1;
-            this.guestRB.TabStop = true;
-            this.guestRB.Text = "Гость";
-            this.guestRB.UseVisualStyleBackColor = true;
+            this.AddUserBtn.Location = new System.Drawing.Point(151, 65);
+            this.AddUserBtn.Name = "AddUserBtn";
+            this.AddUserBtn.Size = new System.Drawing.Size(79, 23);
+            this.AddUserBtn.TabIndex = 3;
+            this.AddUserBtn.Text = "Добавить";
+            this.AddUserBtn.UseVisualStyleBackColor = true;
+            this.AddUserBtn.Click += new System.EventHandler(this.AddUserBtn_Click);
+            // 
+            // PassTB
+            // 
+            this.PassTB.Location = new System.Drawing.Point(151, 43);
+            this.PassTB.Name = "PassTB";
+            this.PassTB.Size = new System.Drawing.Size(272, 20);
+            this.PassTB.TabIndex = 5;
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(97, 46);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(48, 13);
+            this.label3.TabIndex = 4;
+            this.label3.Text = "Пароль:";
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(97, 23);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(41, 13);
+            this.label2.TabIndex = 3;
+            this.label2.Text = "Логин:";
+            // 
+            // LoginTB
+            // 
+            this.LoginTB.Location = new System.Drawing.Point(151, 19);
+            this.LoginTB.Name = "LoginTB";
+            this.LoginTB.Size = new System.Drawing.Size(272, 20);
+            this.LoginTB.TabIndex = 3;
             // 
             // userRB
             // 
@@ -134,57 +164,27 @@
             this.userRB.Text = "Пользователь";
             this.userRB.UseVisualStyleBackColor = true;
             // 
-            // LoginTB
+            // guestRB
             // 
-            this.LoginTB.Location = new System.Drawing.Point(151, 19);
-            this.LoginTB.Name = "LoginTB";
-            this.LoginTB.Size = new System.Drawing.Size(272, 20);
-            this.LoginTB.TabIndex = 3;
+            this.guestRB.AutoSize = true;
+            this.guestRB.Location = new System.Drawing.Point(6, 42);
+            this.guestRB.Name = "guestRB";
+            this.guestRB.Size = new System.Drawing.Size(54, 17);
+            this.guestRB.TabIndex = 1;
+            this.guestRB.TabStop = true;
+            this.guestRB.Text = "Гость";
+            this.guestRB.UseVisualStyleBackColor = true;
             // 
-            // label2
+            // adminRB
             // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(97, 23);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(41, 13);
-            this.label2.TabIndex = 3;
-            this.label2.Text = "Логин:";
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(97, 46);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(48, 13);
-            this.label3.TabIndex = 4;
-            this.label3.Text = "Пароль:";
-            // 
-            // PassTB
-            // 
-            this.PassTB.Location = new System.Drawing.Point(151, 43);
-            this.PassTB.Name = "PassTB";
-            this.PassTB.Size = new System.Drawing.Size(272, 20);
-            this.PassTB.TabIndex = 5;
-            // 
-            // AddUserBtn
-            // 
-            this.AddUserBtn.Location = new System.Drawing.Point(151, 65);
-            this.AddUserBtn.Name = "AddUserBtn";
-            this.AddUserBtn.Size = new System.Drawing.Size(79, 23);
-            this.AddUserBtn.TabIndex = 3;
-            this.AddUserBtn.Text = "Добавить";
-            this.AddUserBtn.UseVisualStyleBackColor = true;
-            this.AddUserBtn.Click += new System.EventHandler(this.AddUserBtn_Click);
-            // 
-            // DelUserBtn
-            // 
-            this.DelUserBtn.Location = new System.Drawing.Point(236, 65);
-            this.DelUserBtn.Name = "DelUserBtn";
-            this.DelUserBtn.Size = new System.Drawing.Size(187, 23);
-            this.DelUserBtn.TabIndex = 6;
-            this.DelUserBtn.Text = "Удалить";
-            this.DelUserBtn.UseVisualStyleBackColor = true;
-            this.DelUserBtn.Click += new System.EventHandler(this.DelUserBtn_Click);
+            this.adminRB.AutoSize = true;
+            this.adminRB.Location = new System.Drawing.Point(6, 19);
+            this.adminRB.Name = "adminRB";
+            this.adminRB.Size = new System.Drawing.Size(58, 17);
+            this.adminRB.TabIndex = 0;
+            this.adminRB.TabStop = true;
+            this.adminRB.Text = "Aдмин";
+            this.adminRB.UseVisualStyleBackColor = true;
             // 
             // Form3
             // 

@@ -66,6 +66,7 @@
             this.label4 = new System.Windows.Forms.Label();
             this.GroupBoxAdmin = new System.Windows.Forms.GroupBox();
             this.AdminBtn = new System.Windows.Forms.Button();
+            this.UpdBtn = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.groupBox1.SuspendLayout();
             this.GroupBoxSearch.SuspendLayout();
@@ -220,6 +221,7 @@
             // 
             // GroupBoxReasons
             // 
+            this.GroupBoxReasons.Controls.Add(this.UpdBtn);
             this.GroupBoxReasons.Controls.Add(this.groupBox5);
             this.GroupBoxReasons.Controls.Add(this.DamageList);
             this.GroupBoxReasons.Controls.Add(this.delDamageBtn);
@@ -450,6 +452,16 @@
             this.AdminBtn.UseVisualStyleBackColor = true;
             this.AdminBtn.Click += new System.EventHandler(this.AdminBtn_Click);
             // 
+            // UpdBtn
+            // 
+            this.UpdBtn.Location = new System.Drawing.Point(9, 38);
+            this.UpdBtn.Name = "UpdBtn";
+            this.UpdBtn.Size = new System.Drawing.Size(121, 23);
+            this.UpdBtn.TabIndex = 11;
+            this.UpdBtn.Text = "Обновить список";
+            this.UpdBtn.UseVisualStyleBackColor = true;
+            this.UpdBtn.Click += new System.EventHandler(this.UpdBtn_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -520,6 +532,7 @@
         private System.Windows.Forms.Button AvarageCostBtn;
         private System.Windows.Forms.GroupBox GroupBoxAdmin;
         private System.Windows.Forms.Button AdminBtn;
+        private System.Windows.Forms.Button UpdBtn;
     }
 }
 

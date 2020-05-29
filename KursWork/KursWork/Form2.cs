@@ -18,7 +18,7 @@ namespace KursWork
 
         private void Form2_Load(object sender, EventArgs e)
         {
-
+            GroupBoxJoin.Enabled = false;
         }
 
         private void JoinBtn_Click(object sender, EventArgs e)
@@ -53,6 +53,27 @@ namespace KursWork
             {
                 form.Close();
             }
+        }
+
+        private void SearchBtn_Click(object sender, EventArgs e)    //Поиск базы данных
+        {
+            using (OpenFileDialog openDialog = new OpenFileDialog())
+            {
+                openDialog.Filter = "База данных|*.sqllite;";
+                if (openDialog.ShowDialog(this) == DialogResult.OK)
+                {
+                    form.SetNameDB(openDialog.FileName);
+                    GroupBoxJoin.Enabled = true;
+                    GroupBoxSelect.Enabled = false;
+                }
+            }
+        }
+
+        private void HereBtn_Click(object sender, EventArgs e)      //Выбор БД в своей дериктории
+        {
+            form.SetNameDB();
+            GroupBoxJoin.Enabled = true;
+            GroupBoxSelect.Enabled = false;
         }
     }
 }
